@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
 import { Board } from './board'
 
 export function Game() {
@@ -8,8 +8,6 @@ export function Game() {
   const [xIsNext, setXIsNext] = useState(true)
 
   const calculateWinner = (squares) => {
-    if(!squares) return null
-
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -20,6 +18,7 @@ export function Game() {
       [0, 4, 8],
       [2, 4, 6]
     ];
+
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
@@ -29,21 +28,35 @@ export function Game() {
     return null;
   }
 
+  const startOver = () => {
+    console.log('Start over')
+  }
+
   const handleClick = (i) => {
+    console.log('I: ', i)
+    console.log('History: ', history)
     if (!history) return
 
     const h = history.slice(0, stepNumber + 1);
-    const current = h[history.length - 1];
-    const squares = current.squares.slice();
+    console.log('h', h)
 
-    if (calculateWinner(squares) || squares[i]) {
+    const current = h[history.length - 1];
+    console.log('current: ', current)
+
+    const squares = current.squares.slice();
+    console.log('Squares: ', squares)
+
+    if (calculateWinner(squares)) {
+      console.log('calculate winner returned something good')
+      console.log(calculateWinner(squares))
+      console.log(squares[i])
       return;
     }
 
     squares[i] = xIsNext ? "X" : "O";
-    setHistory(h.concat([{squares: squares}]))
+    setHistory(history.concat([{squares: squares}]))
 
-    setStepNumber(h.length)
+    setStepNumber(history.length)
     setXIsNext(!xIsNext)
   }
 
@@ -56,16 +69,27 @@ export function Game() {
   }
 
   return (
-    // <View className="game">
-    //   <View className="game-board">
-        <Board
-          squares={history}
-          squareClicked={handleClick}
-        />
-    //   </View>
-    //   <View className="game-info">
-    //     <Text>{status}</Text>
-    //   </View>
-    // </View>
+    <>
+      <View className="game">
+        <View className="game-board">
+          <Board
+            squares={history.slice(0, stepNumber + 1)[history.length - 1].squares}
+            squareClicked={handleClick}
+          />
+        </View>
+        <View className="game-info">
+          <Text>{status}</Text>
+        </View>
+      </View>
+      { winner ?
+        <View>
+          <Button 
+            title='Start over'
+            onPress={() => startOver()}
+          />
+        </View>
+        : <></>
+      }
+    </>
   )
 }

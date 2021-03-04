@@ -1,12 +1,14 @@
 import React from 'react';
 import { Button } from 'react-native'
+import { styles } from './styles'
 
-export function Square({value, onClick}) {
+export function Square({number, value, onClick}) {
+  console.log(number, value)
   return (
     <Button 
-      // className="square" 
-      onPress={onClick}
-      title=""
+      style={styles.squareButton}
+      onPress={() => onClick(number)}
+      title={value}
     >
     </Button>
   );
