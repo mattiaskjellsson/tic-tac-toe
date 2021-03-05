@@ -1,9 +1,31 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Square } from './square'
-import { styles } from './styles'
 
 export function Board({squares, squareClicked}) {
+  const styles = StyleSheet.create({
+    boardRow: {
+      display: 'flex',
+      flexDirection: 'row',
+      backgroundColor: '#0c0c0c',
+    },
+    square: {
+      backgroundColor: '#ffffff',
+      borderStyle: 'solid',
+      borderWidth: 1,
+      borderColor: '#999999',
+      fontSize: 34,
+      fontWeight: 'bold',
+      lineHeight: 34,
+      height: 50,
+      marginRight: -1,
+      marginTop: -1,
+      padding: 0,
+      textAlign: 'center',
+      width: 50,
+    },
+  });
+
   const renderSquare = (i) => {
     console.log(i, squares[i])
     return (

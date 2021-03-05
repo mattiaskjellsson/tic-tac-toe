@@ -1,55 +1,68 @@
 import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import { Board } from './board'
 
 export function Game() {
-  const [history, setHistory] = useState([{squares: Array(9).fill('')}])
+  const emptyHistory = () => [{squares: Array(9).fill(' ')}]
+  const [history, setHistory] = useState(emptyHistory())
   const [stepNumber, setStepNumber] = useState(0)
   const [xIsNext, setXIsNext] = useState(true)
 
+  const styles = StyleSheet.create({
+    game: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    gameInfo: {
+      marginTop: 20,
+    },
+    boardRow: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
+    status: {
+      marginBottom: 10,
+    },
+  });
   const calculateWinner = (squares) => {
     const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
+      [0, 1, 2], // Top Row
+      [3, 4, 5], // Middle row
+      [6, 7, 8], // Bottom row
+      [0, 3, 6], // Left col
+      [1, 4, 7], // Center col
+      [2, 5, 8], // Right col
+      [0, 4, 8], // Cross top- left => bottom-right
+      [2, 4, 6]  // Cross bottom- right => top- left
     ];
 
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      if (
+        squares[a] !== ' '
+        && squares[a] === squares[b] 
+        && squares[a] === squares[c]
+      ) {
         return squares[a];
       }
     }
-    return null;
+
+    return false;
   }
 
   const startOver = () => {
-    console.log('Start over')
+    setHistory(emptyHistory())
+    setStepNumber(0)
   }
 
   const handleClick = (i) => {
-    console.log('I: ', i)
-    console.log('History: ', history)
     if (!history) return
 
     const h = history.slice(0, stepNumber + 1);
-    console.log('h', h)
-
     const current = h[history.length - 1];
-    console.log('current: ', current)
-
     const squares = current.squares.slice();
-    console.log('Squares: ', squares)
 
     if (calculateWinner(squares)) {
-      console.log('calculate winner returned something good')
-      console.log(calculateWinner(squares))
-      console.log(squares[i])
       return;
     }
 
@@ -60,7 +73,8 @@ export function Game() {
     setXIsNext(!xIsNext)
   }
 
-  const winner = calculateWinner(history[stepNumber]?.squares);
+  const winner = calculateWinner(history[stepNumber].squares);
+  
   let status;
   if (winner) {
     status = "Winner: " + winner;
@@ -70,15 +84,15 @@ export function Game() {
 
   return (
     <>
-      <View className="game">
-        <View className="game-board">
+      <View style={styles.game}>
+        <View style={styles.gameBoard}>
           <Board
             squares={history.slice(0, stepNumber + 1)[history.length - 1].squares}
             squareClicked={handleClick}
           />
         </View>
-        <View className="game-info">
-          <Text>{status}</Text>
+        <View style={styles.gameInfo}>
+          <Text style={styles.status}>{status}</Text>
         </View>
       </View>
       { winner ?
