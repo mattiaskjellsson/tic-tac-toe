@@ -27,7 +27,6 @@ export function Board({squares, squareClicked}) {
   });
 
   const renderSquare = (i) => {
-    console.log(i, squares[i])
     return (
       <Square
         number={i}
