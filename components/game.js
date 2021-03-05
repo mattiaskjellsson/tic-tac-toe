@@ -7,6 +7,7 @@ export function Game() {
   const [history, setHistory] = useState(emptyHistory())
   const [stepNumber, setStepNumber] = useState(0)
   const [xIsNext, setXIsNext] = useState(true)
+  const [winner, setWinner] = useState({x: 0, o: 0})
 
   const styles = StyleSheet.create({
     game: {
@@ -53,6 +54,16 @@ export function Game() {
   const startOver = () => {
     setHistory(emptyHistory())
     setStepNumber(0)
+    setWinner(
+      {
+        x: xIsNext ? winner.x + 1 : winner.x,
+        o: xIsNext ? winner.o : winner.o + 1
+      }
+    )
+  }
+
+  const finished = () => {
+    console.log('goto higscore screen...')
   }
 
   const handleClick = (i) => {
@@ -100,6 +111,10 @@ export function Game() {
           <Button 
             title='Start over'
             onPress={() => startOver()}
+          />
+          <Button
+            title='Finisged'
+            onPress={() => finished()} 
           />
         </View>
         : <></>
