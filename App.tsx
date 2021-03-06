@@ -1,39 +1,24 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  StatusBar,
-  StyleSheet,
-} from 'react-native';
-import { Game } from './components/game'
+import { StatusBar } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { HomeScreen } from './components/homeScreen';
+import { GameContainer } from './components/gameContainer';
+import { HighScore } from './components/hishScore';
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  body: {
-    fontSize: 14,
-    fontFamily: 'Century Gothic, Futura, sans-serif',
-    margin: 20,
-  },
-});
+const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <>
+    <NavigationContainer>
       <StatusBar />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <View style={styles.body}>
-            <Game />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Game" component={GameContainer} />
+        <Stack.Screen name="Highscore" component={HighScore} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

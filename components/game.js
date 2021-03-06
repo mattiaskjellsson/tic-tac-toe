@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { Board } from './board'
 
-export function Game() {
+export function Game({
+  navigation
+}) {
   const emptyHistory = () => [{squares: Array(9).fill(' ')}]
   const [history, setHistory] = useState(emptyHistory())
   const [stepNumber, setStepNumber] = useState(0)
@@ -25,6 +27,7 @@ export function Game() {
       marginBottom: 10,
     },
   });
+
   const calculateWinner = (squares) => {
     const lines = [
       [0, 1, 2], // Top Row
@@ -63,7 +66,8 @@ export function Game() {
   }
 
   const finished = () => {
-    console.log('goto higscore screen...')
+    console.log(winner)
+    navigation.navigate('Highscore', winner)
   }
 
   const handleClick = (i) => {
@@ -84,11 +88,11 @@ export function Game() {
     setXIsNext(!xIsNext)
   }
 
-  const winner = calculateWinner(history[stepNumber].squares);
+  const winnerOfRound = calculateWinner(history[stepNumber].squares);
   
   let status;
-  if (winner) {
-    status = "Winner: " + winner;
+  if (winnerOfRound) {
+    status = "Winner: " + winnerOfRound;
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
@@ -106,7 +110,7 @@ export function Game() {
           <Text style={styles.status}>{status}</Text>
         </View>
       </View>
-      { winner ?
+      { winnerOfRound ?
         <View>
           <Button 
             title='Start over'
