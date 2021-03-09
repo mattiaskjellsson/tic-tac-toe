@@ -50,8 +50,13 @@ export function Game({
         return squares[a];
       }
     }
-
+    
     return false;
+  }
+
+  const isDraw = (squares) => {
+    const index = squares.findIndex(x => x === ' ')
+    return index === -1 ? 'Draw' : ''
   }
 
   const startOver = () => {
@@ -73,7 +78,6 @@ export function Game({
         x: w === 'X' ? ++winner.x : winner.x,
         o: w === 'O' ? ++winner.o : winner.o
       })
-      console.log('winner: ', winner)
     }
   }
 
@@ -85,6 +89,12 @@ export function Game({
     const squares = current.squares.slice();
 
     if (squares[i] !== ' ') return
+
+    if (isDraw(squares)) {
+      console.log('Draw')
+      setWinner()
+      return
+    }
 
     const w = calculateWinner(squares)
     if (w) {
@@ -98,7 +108,8 @@ export function Game({
     setXIsNext(!xIsNext)
   }
 
-  const winnerOfRound = calculateWinner(history[stepNumber].squares);
+  const squares = history[stepNumber].squares
+  const winnerOfRound = calculateWinner(squares) || isDraw(squares);
   
   let status;
   if (winnerOfRound) {

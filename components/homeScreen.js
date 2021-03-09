@@ -37,7 +37,7 @@ export function HomeScreen({
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
-            <Text>Home screen</Text>
+            <Text>TIC TAC TOE</Text>
             <Button title="Game" onPress={() => gotoGame()} />
             <Button title="Highscore" onPress={() => gotoHighscore()} />
           </View>
