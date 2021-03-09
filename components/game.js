@@ -55,19 +55,26 @@ export function Game({
   }
 
   const startOver = () => {
+    increaseWinningCount()
     setHistory(emptyHistory())
     setStepNumber(0)
-    setWinner(
-      {
-        x: xIsNext ? winner.x + 1 : winner.x,
-        o: xIsNext ? winner.o : winner.o + 1
-      }
-    )
   }
 
   const finished = () => {
-    console.log(winner)
-    navigation.navigate('Highscore', winner)
+    increaseWinningCount()
+    navigation.navigate('Highscore', {winner})
+  }
+
+  const increaseWinningCount = () => {
+    const squares = history.slice(0, stepNumber + 1)[history.length - 1].squares.slice()
+    const w = calculateWinner(squares)
+    if (w) {
+      setWinner({
+        x: w === 'X' ? ++winner.x : winner.x,
+        o: w === 'O' ? ++winner.o : winner.o
+      })
+      console.log('winner: ', winner)
+    }
   }
 
   const handleClick = (i) => {
@@ -77,8 +84,9 @@ export function Game({
     const current = h[history.length - 1];
     const squares = current.squares.slice();
 
-    if (calculateWinner(squares)) {
-      return;
+    const w = calculateWinner(squares)
+    if (w) {
+      return
     }
 
     squares[i] = xIsNext ? "X" : "O";
@@ -117,7 +125,7 @@ export function Game({
             onPress={() => startOver()}
           />
           <Button
-            title='Finisged'
+            title='Please, no more!'
             onPress={() => finished()} 
           />
         </View>
