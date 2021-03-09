@@ -8,7 +8,8 @@ import {
   Button,
   FlatList,
   ActivityIndicator,
-  Modal, TextInput,
+  Modal, 
+  TextInput,
 } from 'react-native';
 
 const uuid = require('react-native-uuid');
@@ -16,7 +17,7 @@ const uuid = require('react-native-uuid');
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 export function HighScore({ 
   navigation,
-  route
+  route,
 }) {
   const styles = StyleSheet.create({
     scrollView: {
@@ -43,46 +44,29 @@ export function HighScore({
   const [playerName, setPlayerName] = useState('')
   const [playerEditing, setPlayerEditing] = useState('')
 
-  // useEffect(() => {
-  //   getHighScores()
-  //   .then((res) => {
-  //     setLoadError(false)
-  //     const c = res.sort((a, b) => a.wins > b.wins ? -1 : 1)
-  //     setHighscores(c)
-  //   })
-  //   .catch((e) => {
-  //     console.error(e)
-  //     console.log('set loading error true')
-  //     setLoadError(true)
-  //   })
-  //   .finally(() => setLoading(false))
-  // }, [])
-
   useFocusEffect(
     React.useCallback(() => {
       getHighScores()
       .then(res => {
         const c = res.sort((a, b) => a.wins > b.wins ? -1 : 1)
         setHighscores(c)
-        
         if (route?.params?.winner) {
-          if (route.params.winner.x > res[res.length -1].wins) {
-            setPlayerEditing('x')
-            setModalVisible(true)
-            // setHighscores(
-            //   res.concat({ 
-            //     id: (res.length + 1).toString(),
-            //     name: 'x', 
-            //     wins: route.params.winner.x
-            //   }).sort((a, b) => a.wins > b.wins ? -1 : 1)
-            // )
-          }
-    
-          if (route.params.winner.o > res[res.length -1].wins) {
-            setPlayerEditing('o')
-            setModalVisible(true)
-          }
+          const winner = route.params.winner
+          const lowestCurrentWins = c[c.length-1].wins
+          const nrHighscores = c.length
+
+          if (winner.x > winner.o)
+            if (winner.x > lowestCurrentWins || nrHighscores < 10) {
+              setPlayerEditing('x')
+              setModalVisible(true)
+            }
+          else
+            if (winner.o > lowestCurrentWins || nrHighscores < 10) {
+              setPlayerEditing('o')
+              setModalVisible(true)
+            }
         }
+
         setLoadError(false)
       })
       .catch((e) => {
@@ -107,20 +91,43 @@ export function HighScore({
   }
 
   const saveHighscore = () => {
-    console.log(route.params.winner)
-    console.log(playerName)
-
     const body = {
       name: playerName, 
       wins: playerEditing === 'x' ? route.params.winner.x : route.params.winner.o
     }
 
-    setHighscores(highscores.concat(body).sort((a, b) => a.wins > b.wins ? -1 : 1))
     sendNewHighscore(body)
 
     setModalVisible(false)
     setPlayerEditing('')
     setPlayerName('')
+  }
+
+  const sendNewHighscore = async (body) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    };
+    fetch('http://localhost:3000/highscore/', requestOptions)
+    .then(response => response.json())
+    .then(data => {
+      highscores
+      .concat({ name: data.name, wins: data.wins})
+      .sort((a, b) => a.wins > b.wins ? -1 : 1)
+    })
+    .catch(e => console.error(e))
+  }
+  
+  const getHighScores = async () => {
+    if (highscores.length > 0) return highscores
+
+    try {
+      const hi = await fetch('http://localhost:3000/highscore')
+      return hi.json()
+    } catch (e) {
+      throw e
+    }
   }
 
   return (
@@ -162,30 +169,4 @@ export function HighScore({
             </Modal>
             </SafeAreaView>
   )
-}
-
-const sendNewHighscore = async (body) => {
-  try {
-    const response = await fetch()
-    fetch('http://localhost/highscore/', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: body,
-    })
-  } catch (e) {
-    console.error(e)
-    throw e
-  }
-}
-
-const getHighScores = async () => {
-  try {
-    const highscores = await fetch('http://localhost:3000/highscore')
-    return highscores.json()
-  } catch (e) {
-    throw e
-  }
 }

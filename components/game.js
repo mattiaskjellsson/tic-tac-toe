@@ -84,6 +84,8 @@ export function Game({
     const current = h[history.length - 1];
     const squares = current.squares.slice();
 
+    if (squares[i] !== ' ') return
+
     const w = calculateWinner(squares)
     if (w) {
       return
