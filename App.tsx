@@ -13,10 +13,33 @@ const App = () => {
   return (
     <NavigationContainer>
       <StatusBar />
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Game" component={GameContainer} />
-        <Stack.Screen name="Highscore" component={HighScore} />
+      <Stack.Navigator
+        headerMode="none"
+      >
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerTransparent: true,
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="Game"
+          component={GameContainer}
+          options={{
+            headerTransparent: true,
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen 
+          name="Highscore"
+          component={HighScore}
+          options={{
+            headerTransparent: true,
+            gestureEnabled: false,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

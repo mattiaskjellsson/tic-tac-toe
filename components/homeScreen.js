@@ -21,6 +21,10 @@ export function HomeScreen({
       fontFamily: 'Century Gothic, Futura, sans-serif',
       margin: 20,
     },
+    header: {
+      fontSize: 24,
+      textAlign: 'center',
+    },
   });
 
   const gotoGame = () => {
@@ -37,8 +41,8 @@ export function HomeScreen({
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
-            <Text>TIC TAC TOE</Text>
-            <Button title="Game" onPress={() => gotoGame()} />
+            <Text style={styles.header}>TIC TAC TOE</Text>
+            <Button title="Start a Player vs. Player game" onPress={() => gotoGame()} />
             <Button title="Highscore" onPress={() => gotoHighscore()} />
           </View>
         </ScrollView>

@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import React, { useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -20,20 +20,50 @@ export function HighScore({
   route,
 }) {
   const styles = StyleSheet.create({
+    header: {
+      fontSize: 24,
+      textAlign: 'center'
+    },
     scrollView: {
-      backgroundColor: Colors.lighter,
+      backgroundColor: Colors.lighter
     },
     body: {
       fontSize: 14,
       fontFamily: 'Century Gothic, Futura, sans-serif',
-      margin: 20,
+      padding: 20
+    },
+    highscoreItem: {
+      display: 'flex',
+      flexDirection: 'row'
+    },
+    highscorePlace: {
+      flexGrow: 1,
+      fontSize: 18,
+      textTransform: 'capitalize'
+    },
+    highscoreName: {
+      flexGrow: 3,
+      fontSize: 18,
+      textTransform: 'capitalize',
+      textAlign: 'left'
+    },
+    highscoreWins: {
+      flexGrow: 2,
+      fontSize: 20,
+      textAlign: 'right',
+      paddingRight: 20
+    },
+    inputInstruction: {
+      fontSize: 16,
+      marginBottom: 12
     },
     textInput: {
       borderWidth: 1,
       borderColor: '#cccccc',
       borderRadius: 10,
       lineHeight: 16,
-      fontSize: 14
+      fontSize: 14,
+      padding: 10
     },
   });
 
@@ -137,15 +167,19 @@ export function HighScore({
           ? <Text>Error loading stuff from the server, please try again</Text>
           : <SafeAreaView>
             <View style={styles.body}>
-              <Text>Highscore</Text>
+              <Text style={styles.header}>Highscore</Text>
               <FlatList
                 data={highscores}
                 keyExtractor={({ id }, index) => uuid.v4()}
-                renderItem={({ item }) => (
-                  <Text>{item.name}, {item.wins}</Text>
+                renderItem={({ item, index }) => (
+                  <View style={styles.highscoreItem}>
+                    <Text style={styles.highscorePlace}>{index + 1}</Text>
+                    <Text style={styles.highscoreName}>{item.name}</Text>
+                    <Text style={styles.highscoreWins}>{item.wins}</Text>
+                  </View>
                 )}
               />
-              <Button title="Home" onPress={() => gotoHome()} />
+              <Button title="Back to main menu" onPress={() => gotoHome()} />
             </View>
             <Modal
               animationType="slide"
@@ -156,15 +190,16 @@ export function HighScore({
                 setModalVisible(!modalVisible);
               }}
             >
-              <View style={{ flex: 1, marginTop: 50}}>
-                <Text>Hello! Enter Player {playerEditing}'s name to save it to the highscore</Text>
+              <View style={{...styles.body, marginTop: 50 }}>
+                <Text style={styles.inputInstruction}>Enter player {playerEditing}'s name, to make it immortal</Text>
                 <TextInput
                   onChangeText={text => setPlayerName(text)}
                   style={styles.textInput}
                   value={playerName}
                   placeholder='Player name'
                 />
-                <Button title='Save' onPress={() => saveHighscore()} />
+                <Button title="Save my name for the ages" onPress={() => saveHighscore()} />
+                <Button title="No, I don't want to save my name" onPress={() => setModalVisible(!modalVisible)} />
               </View>
             </Modal>
             </SafeAreaView>
